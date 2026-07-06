@@ -1,0 +1,15 @@
+{
+  "description": "Swarm plugin Stop hook — drives loop mode's cross-turn optimization loop",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/swarm-stop.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
