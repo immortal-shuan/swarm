@@ -205,3 +205,35 @@ fi
 # 填入实际承诺语
 BODY="${BODY_TEMPLATE//@@PROMISE@@/$COMPLETION_PROMISE}"
 
+
+# 写入状态文件
+cat > "$STATE_FILE" <<EOF
+---
+active: true
+mode: $MODE
+iteration: 1
+max_iterations: $MAX_ITERATIONS
+completion_promise: $COMPLETION_PROMISE
+session_id: ${CLAUDE_CODE_SESSION_ID:-}
+started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+---
+
+$PROMPT
+
+$BODY
+EOF
+
+# 输出到终端提示
+cat <<EOF
+🔄 Swarm activated in this session!
+
+mode: $MODE
+Iteration: 1
+max_iterations: $MAX_ITERATIONS
+completion_promise: $COMPLETION_PROMISE
+🔄
+
+Task: $PROMPT
+EOF
+
+
