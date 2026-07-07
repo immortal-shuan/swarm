@@ -1,9 +1,9 @@
 {
   "name": "swarm",
-  "version": "0.1.0",
-  "description": "Multi-perspective research swarm. Per .claude/rules/roles.md it spawns theory / engineering / adjacent-domain / broad-domain sub-agents to research a task, synthesizes their findings, and implements the result. Three modes: normal, goal (identify + verify a core goal), loop (hook-driven continuous optimization).",
+  "version": "1.0.0",
+  "description": "hold",
   "author": {
-    "name": "immortal"
-  },
-  "keywords": ["swarm", "multi-agent", "research", "orchestration", "goal", "loop"]
+    "name": "zero2x",
+    "email": "immortal@zhejianglab.org"
+  }
 }
