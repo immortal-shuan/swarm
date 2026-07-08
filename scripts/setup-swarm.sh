@@ -225,15 +225,6 @@ EOF
 
 # 输出到终端提示
 cat <<EOF
-🔄 Swarm activated in this session!
 
-mode: $MODE
-Iteration: 1
-max_iterations: $MAX_ITERATIONS
-completion_promise: $COMPLETION_PROMISE
-🔄
-
-Task: $PROMPT
+$BODY
 EOF
-
-
