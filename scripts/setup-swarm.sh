@@ -8,13 +8,16 @@ MODE="normal"
 MAX_ITERATIONS=20
 COMPLETION_PROMISE=""
 
-STATE_FILE=".claude/swarm-state.local.md"
+session_id=${CLAUDE_CODE_SESSION_ID:-}
+STATE_FILE=".claude/.swarm/state-$session_id.local.md"
 
 # Parse options and positional arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
     -h|--help)
       cat << 'HELP_EOF'
+Output the following content completely, without modification or summary.
+
 Swarm Research: Arrange multiple agents to advance the mission in parallel.
 
 USAGE:
@@ -25,7 +28,7 @@ ARGUMENTS:
 
 OPTIONS:
   --mode <normal|goal|loop>      mode selection, goal: work until the goal is achieved, loop: optimizes until no further optimization is possible, normal: single-round session(default)
-  --max-iterations <n>             Maximum iterations before auto-stop (default: 20)
+  --max-iterations <n>             Maximum iterations before auto-stop (default: 20; 0 represents infinity)
   --completion-promise '<text>'    Promise phrase (USE QUOTES for multi-word)
   -h, --help                       Show this help message
 
@@ -48,7 +51,6 @@ STOPPING:
   run `/swarm:swarm-cancel`
 
 MONITORING:
-  # View current iteration:
   head -10 .claude/swarm-state.local.md
 HELP_EOF
       exit 0
@@ -158,15 +160,15 @@ fi
 
 # 如果是normal模式，则正常退出
 if [[ "$MODE" == "normal" ]]; then
-  echo "✅ In normal mode, Swarm agents is directly invoked to perform the task."
-  exit 1
+  echo "✅ In normal mode, `swarm:swarm-agent` is directly invoked to perform the task: $PROMPT"
+  exit 0
 fi
 
 # 判定当前项目是否已有活跃循环,若有，则拒绝
 if [[ -f "$STATE_FILE" ]]; then
   echo "⚠️  You cannot run multiple swarm goal or loop modes within the same project." >&2
   echo "⚠️  The current project has an active swarm (goal/loop mode)." >&2
-  echo "⚠️  Please run `swarm:swarm-cancel` before attempting to start a new one." >&2
+  echo "⚠️  Please run `/swarm:swarm-cancel` before attempting to start a new one." >&2
   exit 1
 fi
 
@@ -212,6 +214,10 @@ cat > "$STATE_FILE" <<EOF
 active: true
 mode: $MODE
 iteration: 1
+phase: decomposition
+phase_state: executing
+subagents: 0
+tools: 0
 max_iterations: $MAX_ITERATIONS
 completion_promise: $COMPLETION_PROMISE
 session_id: ${CLAUDE_CODE_SESSION_ID:-}
@@ -219,12 +225,11 @@ started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 ---
 
 $PROMPT
-
-$BODY
 EOF
 
-# 输出到终端提示
+# 第一轮swarm工作的prompt
 cat <<EOF
+Task：$PROMPT
 
-$BODY
+该阶段的任务要求是：使用/swarm:swarm-agent 来完成任务
 EOF

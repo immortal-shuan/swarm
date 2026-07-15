@@ -1,5 +1,5 @@
 {
-  "description": "Swarm plugin Stop hook — drives loop mode's cross-turn optimization loop",
+  "description": "Swarm plugin Stop hook — drives loop/goal mode's cross-turn optimization",
   "hooks": {
     "Stop": [
       {
@@ -7,6 +7,26 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/swarm-stop.sh\""
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/agent-start.sh\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/agent-stop.sh\""
           }
         ]
       }
